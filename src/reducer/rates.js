@@ -1,9 +1,9 @@
-import { UPDATE_RATES, CHANGE_BASE_CURRENCY, DELETE_BASE_CURRENCY } from '../constants'
+import { UPDATE_RATES, CHANGE_BASE_CURRENCY, SELECT_EXCHANGE_CURRENCY, DELETE_EXCHANGE_CURRENCY } from '../constants'
 
 const defaultState = {
   exchangeRates: [],
   selected: [],
-  baseCurrency: ''
+  baseCurrency: undefined
 }
 
 export default (state = defaultState, action) => {
@@ -15,7 +15,14 @@ export default (state = defaultState, action) => {
 
     case CHANGE_BASE_CURRENCY:
       return { ...state, baseCurrency: payload }
+
+    case SELECT_EXCHANGE_CURRENCY:
+      return { ...state, selected: [...state.selected, payload] }
+
+    case DELETE_EXCHANGE_CURRENCY:
+      return { ...state, selected: state.selected.filter(ticker => ticker !== payload) }
+
+    default: return state
   }
 
-  return state
 }

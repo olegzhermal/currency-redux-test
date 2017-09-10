@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 
 class Rates extends Component {
   render() {
-    const exchangeRates = this.props.exchangeRates.map(({ pair, rate }) => (
-      <tr key={ pair }>
-        <td>{pair}</td>
+    const exchangeRates = this.props.exchangeRates.map(({ currency, rate }) => (
+      <tr key={ currency }>
+        <td>{currency}</td>
         <td>{rate}</td>
       </tr>
     ))
