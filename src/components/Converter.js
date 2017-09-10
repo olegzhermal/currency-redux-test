@@ -2,14 +2,16 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
-import store from '../store'
-import { changeBaseCurrency, selectExchangeCurrency, deleteExchangeCurrency } from '../AC'
+import CurrencyInput from 'react-currency-input'
+import {
+  changeBaseCurrency,
+  changeBaseCurrencyQ,
+  selectExchangeCurrency,
+  changeExchangeCurrency,
+  deleteExchangeCurrency
+} from '../AC'
 
 class Converter extends Component {
-  state = {
-    quantity: 0
-  }
-
   changeBaseCurrencyQuantity = ({target: { value: quantity }}) => {
     this.setState({ quantity })
   }
@@ -18,17 +20,24 @@ class Converter extends Component {
     if (currency) this.props.changeBaseCurrency(currency.value)
       else this.props.changeBaseCurrency(undefined)
   }
+  changeBaseCurrencyQ = quantity => {
+    this.props.changeBaseCurrencyQ(quantity)
+  }
 
   selectExchangeCurrency = id => currency => {
     if (!currency) {
       this.props.deleteExchangeCurrency(id);
-    } else {
-      this.props.selectExchangeCurrency(currency.value)
+    } else if (!this.props.selected.includes(currency.value)){
+      if (id) {
+        this.props.changeExchangeCurrency(id, currency.value)
+      } else {
+        this.props.selectExchangeCurrency(currency.value)
+      }
     }
   }
 
   render() {
-    const { exchangeRates, baseCurrency, selected } = this.props
+    const { exchangeRates, baseCurrency, baseCurrencyQ, selected } = this.props
     const filteredExchangeRates = exchangeRates.filter(({ ticker }) => !selected.includes(ticker))
 
 
@@ -43,51 +52,58 @@ class Converter extends Component {
 
     const selectedCurrenciesFields = selected.length === 0 ? null :
       selected.map( (ticker, index) => {
+        const baseCurrencyQuantityNumber = baseCurrencyQ ? +baseCurrencyQ.replace(/\s/g,'') : undefined
         const baseCurrencyRateRub = baseCurrency ? exchangeRates.find(element => element.ticker === baseCurrency).rate : null
         const currencyRateRub = exchangeRates.find(element => element.ticker === ticker).rate
-        const exchangeRate = baseCurrencyRateRub ? baseCurrencyRateRub/currencyRateRub * this.state.quantity : null
+        const exchangeRate = baseCurrencyRateRub ? baseCurrencyRateRub/currencyRateRub * baseCurrencyQuantityNumber : null
 
-        const exchangeRateMessage = baseCurrency && this.state.quantity ?
-          `${exchangeRate} за ${this.state.quantity} ед. базовой валюты` :
-          `для получения обменного курса нужно выбрать базовую валюту и количество`
+        const exchangeRateMessage = baseCurrency && baseCurrencyQ ?
+          `${exchangeRate.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} за ${baseCurrencyQ} ${baseCurrency}` :
+          `не введена базовая валюта или количество`
 
         return (
-          <div key={ `${ticker}-${index}` }>
+          <div key={ `${ticker}-${index}` } className='currency_box'>
             <Select
               name="exchange_currency"
               value={ ticker }
               options={ baseSelectOptions }
               onChange={ this.selectExchangeCurrency(ticker) }
             />
-            <div>{ exchangeRateMessage }</div>
-            <button onClick={() => {}}>Удалить</button>
+            <div className="exchange_rate">{ exchangeRateMessage }</div>
           </div>
         )
       })
 
     return (
       <div>
-        <div>
-          <label htmlFor="baseCurrency">Базовая валюта</label>
+        <div className='currency_box base_currency_box'>
           <Select
             name="base_currency"
+            placeholder="Базовая валюта"
             value={ baseCurrency }
             options={ baseSelectOptions }
             onChange={ this.changeBaseCurrency }
           />
-          Количество <input type="text" id="baseCurrency" onChange={this.changeBaseCurrencyQuantity} />
+          <CurrencyInput
+            decimalSeparator="."
+            thousandSeparator=" "
+            value={ baseCurrencyQ }
+            onChange={ this.changeBaseCurrencyQ }
+          />
         </div>
 
+        <hr />
+
         {selectedCurrenciesFields}
-        <div>
+
+        <div className='currency_box'>
           <Select
             name="exchange_currency"
+            placeholder="Добавьте валюту"
             value="one"
             options={selectOptions}
             onChange={this.selectExchangeCurrency()}
           />
-          <div>Здесь будет отображаться курс обмена</div>
-          <button onClick={() => {}}>Удалить</button>
         </div>
       </div>
     )
@@ -95,8 +111,15 @@ class Converter extends Component {
 }
 
 
-export default connect(({ rates: { exchangeRates, baseCurrency, selected } }) => ({
+export default connect(({ rates: { exchangeRates, baseCurrency, baseCurrencyQ, selected } }) => ({
   exchangeRates,
   baseCurrency,
+  baseCurrencyQ,
   selected
-}), { changeBaseCurrency, selectExchangeCurrency, deleteExchangeCurrency })(Converter)
+}), {
+  changeBaseCurrency,
+  changeBaseCurrencyQ,
+  selectExchangeCurrency,
+  changeExchangeCurrency,
+  deleteExchangeCurrency
+})(Converter)

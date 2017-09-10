@@ -10,7 +10,6 @@ import './App.css'
 
 export default class App extends Component {
   componentWillMount() {
-    // console.log(this.props.updateRates());
     updateRates(store.dispatch)
   }
 
@@ -23,12 +22,15 @@ export default class App extends Component {
            <Tab>Конвертер</Tab>
          </TabList>
 
-         <TabPanel>
-           <Rates />
-         </TabPanel>
-         <TabPanel>
-           <Converter />
-         </TabPanel>
+         <div className="main_content">
+           <TabPanel>
+             <Rates />
+           </TabPanel>
+           <TabPanel>
+             <Converter />
+           </TabPanel>
+         </div>
+
        </Tabs>
      </Provider>
     );

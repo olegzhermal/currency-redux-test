@@ -10,7 +10,13 @@ class Rates extends Component {
       </tr>
     ))
     return (
-      <table>
+      <table className="rates_table">
+        <thead>
+          <tr>
+            <th>Валюта</th>
+            <th>Курс</th>
+          </tr>
+        </thead>
         <tbody>
           { exchangeRates }
         </tbody>

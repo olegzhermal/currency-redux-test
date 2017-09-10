@@ -8,7 +8,23 @@ export default [
     ticker: 'USD'
   },
   {
+    name: 'Канадский доллар',
+    ticker: 'CAD'
+  },
+  {
     name: 'Евро',
     ticker: 'EUR'
+  },
+  {
+    name: 'Китайский юань',
+    ticker: 'CNY'
+  },
+  {
+    name: 'Швейцарский франк',
+    ticker: 'CHF'
+  },
+  {
+    name: 'Японская иена',
+    ticker: 'JPY'
   },
 ]

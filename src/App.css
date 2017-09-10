@@ -1,3 +1,51 @@
-.App {
+.main_content {
+  margin: 10px;
+}
 
+.rates_table {
+  border-collapse: collapse;
+}
+
+.rates_table tr > th, .rates_table tr > td {
+  border-bottom: 1px solid #b3b3b3;
+}
+
+.rates_table tr > td {
+  padding: 10px 0;
+}
+
+.rates_table tr > th:nth-child(2), .rates_table tr > td:nth-child(2) {
+  padding-left: 70px;
+}
+
+.rates_table tr > th {
+  text-align: left;
+}
+
+.currency_box {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.currency_box > input, .currency_box > .exchange_rate {
+  margin-left: 10px;
+}
+
+.currency_box > input {
+  padding-left: 10px;
+  line-height: 32px;
+  border-radius: 3px;
+  border: 1px solid #aaa;
+}
+
+@media only screen and (max-device-width: 1000px) {
+  .currency_box > .Select {
+    width: 50%;
+  }
+}
+@media only screen and (min-device-width: 1001px) {
+  .currency_box > .Select {
+    width: 300px;
+  }
 }
